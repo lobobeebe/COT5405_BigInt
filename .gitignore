@@ -331,6 +331,12 @@ ASALocalRun/
 # Local History for Visual Studio
 .localhistory/
 
+*.vcxproj
+*.vcxproj.filters
+*.sln
+Win32/
+build/
+
 CMakeCache.txt
 CMakeFiles
 CMakeScripts
