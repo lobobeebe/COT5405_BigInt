@@ -1,1 +1,5 @@
-add_executable(BigInt main.cpp BigInt.cpp BigInt.h)
+add_executable(Main main.cpp)
+target_link_libraries (Main LINK_PUBLIC BigInt)
+
+add_subdirectory (BigInt)
+add_subdirectory (test)

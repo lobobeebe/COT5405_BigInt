@@ -1,4 +1,4 @@
-#include "BigInt.h"
+#include "BigInt/BigInt.h"
 #include <iostream>
 
 int main()
@@ -9,7 +9,8 @@ int main()
     value0.push_back(3);
     value0.push_back(2);
     value0.push_back(1);
-    BigInt val0 = BigInt(value0);
+    value0.push_back(0);
+    BigInt val0 = BigInt(false, value0);
 
     std::vector<uint8_t> value1;
     value1.push_back(5);
@@ -17,13 +18,13 @@ int main()
     value1.push_back(7);
     value1.push_back(8);
     value1.push_back(9);
-    BigInt val1 = BigInt(value1);
+    value0.push_back(0);
+    BigInt val1 = BigInt(true, value1);
 
-    std::cout << val0.getString() << " + " << val1.getString() << std::endl;
-
-    BigInt result = val0 + val1;
-
-    std::cout << result.getString() << std::endl;
+    std::cout << val0 << " + " << val1 << " = " << (val0 + val1) << std::endl;
+    std::cout << val0 << " - " << val1 << " = " << (val0 - val1) << std::endl;
+    //std::cout << val0 << " - " << val1 << " = " << (val0 + val1) << std::endl;
+    //std::cout << val0 << " + " << val1 << " = " << (val0 + val1) << std::endl;
 
     return 0;
 }
