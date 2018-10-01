@@ -1,30 +1,54 @@
 #include "BigInt/BigInt.h"
-#include <iostream>
+#include <fstream>
+#include <chrono>
+#include <string>
+#include <stdlib.h>
 
-int main()
+int main(int argc, const char* argv[])
 {
-    std::vector<uint8_t> value0;
-    value0.push_back(5);
-    value0.push_back(4);
-    value0.push_back(3);
-    value0.push_back(2);
-    value0.push_back(1);
-    value0.push_back(0);
-    BigInt val0 = BigInt(false, value0);
+    if (argc != 3)
+    {
+        std::cout << "Format: <Executable Name>.exe <Num Digits> <Num Iterations>" << std::endl;
+        return 1;
+    }
 
-    std::vector<uint8_t> value1;
-    value1.push_back(5);
-    value1.push_back(6);
-    value1.push_back(7);
-    value1.push_back(8);
-    value1.push_back(9);
-    value0.push_back(0);
-    BigInt val1 = BigInt(true, value1);
+    int numDigits = std::atoi(argv[1]);
+    int numIterations = std::atoi(argv[2]);
 
-    std::cout << val0 << " + " << val1 << " = " << (val0 + val1) << std::endl;
-    std::cout << val0 << " - " << val1 << " = " << (val0 - val1) << std::endl;
-    //std::cout << val0 << " - " << val1 << " = " << (val0 + val1) << std::endl;
-    //std::cout << val0 << " + " << val1 << " = " << (val0 + val1) << std::endl;
+    // Create file stream to track results
+    // FORMAT: OPERAND0, OPERAND1, RESULT, DURATION (us)
+    std::ofstream perfStream;
+    perfStream.open(std::to_string(numDigits) + "_" + std::to_string(numIterations) + "_mult_perf.csv");
+
+    // Random number generator
+    std::default_random_engine generator;
+    generator.seed(std::chrono::system_clock::now().time_since_epoch().count());
+
+    // For each iteration
+    for (int i = 0; i < numIterations; ++i)
+    {
+        // Get random values of size numDigits (this time not calculated in performance)
+        BigInt val0 = BigInt::getRandom(generator, numDigits);
+        BigInt val1 = BigInt::getRandom(generator, numDigits);
+
+        // Start Time
+        auto start = std::chrono::high_resolution_clock::now();
+
+        // Multiplication
+        BigInt result = val0 * val1;
+
+        // Stop Time
+        auto stop = std::chrono::high_resolution_clock::now();
+
+        // Calculate duration
+        auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
+
+        // Print out result/performance
+        perfStream << val0.getString() << "," << val1.getString() << ","
+            << result.getString() <<"," << duration.count() << std::endl;
+    }
+
+    perfStream.close();
 
     return 0;
 }

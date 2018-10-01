@@ -115,6 +115,12 @@ void testMultiplication()
 
     result = bigInt0 * bigInt1;
     assertEqual(-6705927450, result.getIntValue(), __LINE__);
+
+    bigInt0 = BigInt(99);
+    bigInt1 = BigInt(99999);
+
+    result = bigInt0 * bigInt1;
+    assertEqual(9899901, result.getIntValue(), __LINE__);
 }
 
 void testGetIntValue()

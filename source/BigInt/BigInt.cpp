@@ -1,7 +1,12 @@
 #include "BigInt.h"
-#include <random>
 #include <sstream>
-#include <iostream>
+#include <chrono>
+
+BigInt::BigInt() :
+    mIsPositive(true)
+{
+    mValue.push_back(0);
+}
 
 BigInt::BigInt(const BigInt& other) :
     mIsPositive(other.mIsPositive),
@@ -93,11 +98,9 @@ std::string BigInt::getString() const
     return stream.str();
 }
 
-BigInt BigInt::getRandom(unsigned int numDigits)
+BigInt BigInt::getRandom(std::default_random_engine& generator, unsigned int numDigits)
 {
-    std::default_random_engine generator;
     std::uniform_int_distribution<uint8_t> distribution(0,9);
-
     std::vector<uint8_t> value;
 
     for (unsigned int i = 0; i < numDigits; ++i)
@@ -223,24 +226,50 @@ BigInt BigInt::operator-(const BigInt& other) const
 //=============================================================================**
 BigInt BigInt::operator*(const BigInt& other) const
 {
-    BigInt total(0);
-    BigInt add(true, mValue);
+    // Given two integers A and B, represented as vectors [an-1, an-2, ..., a0] and [bm-1, bm-2, ..., b0], respectively, where n cardinality of A and m is the cardinality of B.
+    // Let the result, C, be the vector of cardinality (n + m) where all values in C are initially 0.
 
-    for (BigInt i(0); i < other; i = i + BigInt(1))
+    // A is the integer defined by this object
+    // B is the integer defined by object "other"
+
+    // Allocate vector C with cardinality (n + m)
+    std::vector<uint8_t> results(mValue.size() + other.mValue.size(), 0);
+
+    // Allocate a value for the carry over between digits. Carry over is initially 0.
+    uint8_t carryOver = 0;
+
+    // For each digit index in A, i:
+    for (int i = 0; i < mValue.size(); ++i)
     {
-        total = total + add;
+        // For each digit index in B, j:
+        for (int j = 0; j < other.mValue.size(); ++j)
+        {
+            // Calculate A[i] * B[j] once for efficiency
+            uint8_t mult = mValue[i] * other.mValue[j];
+
+            // Add (k + A[i] * B[j]) % 10 to C[i + j], where k is the carryover
+            results[j + i] += carryOver + mult % 10;
+
+            // let k be (A[i] * B[j]) / 10
+            carryOver = mult / 10;
+        }
+
+        // Add k to C[i + m]
+        results[i + other.mValue.size()] += carryOver;
+
+        // Assign 0 to k
+        carryOver = 0;
     }
 
-    if (mIsPositive != other.mIsPositive)
-    {
-        total.mIsPositive = false;
-    }
+    // Create the BigInt from the vector
+    // Only negative if the signs are different
+    BigInt total(mIsPositive == other.mIsPositive, results);
 
     return total;
 }
 
 //=============================================================================**
-// Less Than Operator (IGNORES POSITIVE - ONLY MAGNITUDE)
+// Less Than Operator (IGNORES NEGATIVE - ONLY MAGNITUDE)
 //=============================================================================**
 bool BigInt::operator<(const BigInt& other) const
 {
