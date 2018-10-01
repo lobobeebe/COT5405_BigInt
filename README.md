@@ -11,14 +11,14 @@ Run ./buildMinGW.sh
 
 # Procedure
 Our results were captured running on Ubuntu 17.10 64-bit
-Processor: i7-2670qm 2.2GHz x 8
-Memory: 8GB
+* Processor: i7-2670qm 2.2GHz x 8
+* Memory: 8GB
 
 Tools:
-CMake 3.9.1
-GNU Make 4.1
-massif by Valgrind 3.13.0
-GCC 7.2.0
+* CMake 3.9.1
+* GNU Make 4.1
+* massif by Valgrind 3.13.0
+* GCC 7.2.0
 
 ## Space Complexity
 Run the following command:
