@@ -1,14 +1,34 @@
 # COT5405_BigInt
 Write a program to add/subtract/multiply/divide two n-digit signed integers (where n ranges from 1 to 1000). 
 
-*Multiplication Pseudo-Code*
+# Build
+Linux:
+Run ./buildLinux.sh
 
-Given two integers A and B, represented as vectors [an-1, an-2, ..., a0] and [bm-1, bm-2, ..., b0], respectively, where n cardinality of A and m is the cardinality of B.
-Let the result, C, be the vector of cardinality (n + m) where all values in C are initially 0. 
+MinGW:
+Run ./buildMinGW.sh
 
-For each digit index in A, i:
-    For each digit index in B, j:
-        Add (k + A[i] * B[j]) % 10 to C[i + j], where k is the carryover and initially 0
-        let k be (A[i] * B[j]) / 10 
-    Add k to C[i + m]
-    Assign 0 to k
+
+# Procedure
+Our results were captured running on Ubuntu 17.10 64-bit
+Processor: i7-2670qm 2.2GHz x 8
+Memory: 8GB
+
+Tools:
+CMake 3.9.1
+GNU Make 4.1
+massif by Valgrind 3.13.0
+GCC 7.2.0
+
+## Space Complexity
+Run the following command:
+* "valgrind --tool=massif --max-snapshots=10 --time-unit=B ./Main x 1000", where x is the number of digits to test.
+* "ms_print massif.out.XXXXX", where XXXXX is the generated output number.
+
+Using this output, select the greatest value in the "total(B)" column as the total bytes used for the run.
+
+## Time Complexity
+Run the following command:
+* "./Main x 1000", where x is the number of digits to test
+
+An output CSV file will be generated with the results of each run and the time it took to complete. Average all numbers in the 4th column (time) as the result of this run.
